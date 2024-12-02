@@ -55,9 +55,12 @@ export default function HomeScreen({ navigation }) {
     incrementCount();
   };
 
-  const handleLogout = () => {
-    logout();
-    navigation.replace("Login");
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   const onRefresh = () => {

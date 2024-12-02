@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Animated,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -21,9 +22,9 @@ export default function LoginScreen({ navigation }) {
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const [buttonScale] = useState(new Animated.Value(1));
-
 
   const validateEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -88,28 +89,46 @@ export default function LoginScreen({ navigation }) {
     ]).start();
   };
 
-  const handleLogin = () => {
-    Keyboard.dismiss();
-    animateButton();
+ const handleLogin = async () => {
+   try {
+     setIsLoading(true);
+     Keyboard.dismiss();
+     animateButton();
 
-    const emailError = validateEmail(formData.email);
-    const passwordError = validatePassword(formData.password);
+     const emailError = validateEmail(formData.email);
+     const passwordError = validatePassword(formData.password);
 
-    const newErrors = {
-      email: emailError,
-      password: passwordError,
-    };
+     const newErrors = {
+       email: emailError,
+       password: passwordError,
+     };
 
-    setErrors(newErrors);
+     setErrors(newErrors);
 
-    if (emailError || passwordError) {
-      return;
-    }
+     if (emailError || passwordError) {
+       return;
+     }
 
-    login({ email: formData.email });
-    navigation.replace("Home");
-  };
+     const result = await login({
+       email: formData.email,
+       password: formData.password,
+     });
 
+     if (!result.success) {
+       setErrors((prev) => ({
+         ...prev,
+         email: result.error,
+       }));
+     }
+   } catch (error) {
+     setErrors((prev) => ({
+       ...prev,
+       email: "An unexpected error occurred",
+     }));
+   } finally {
+     setIsLoading(false);
+   }
+ };
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -118,8 +137,9 @@ export default function LoginScreen({ navigation }) {
       >
         <View style={styles.content}>
           <View style={styles.headerContainer}>
-            <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>Sign in to continue</Text>
+            <Icon name="shield-check" size={50} color="#0782F9" />
+            <Text style={styles.title}>NutriGuard</Text>
+            <Text style={styles.subtitle}>Your Food Safety Companion</Text>
           </View>
 
           <View style={styles.form}>
@@ -141,6 +161,7 @@ export default function LoginScreen({ navigation }) {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
+                editable={!isLoading}
               />
             </View>
             {errors.email && (
@@ -166,10 +187,12 @@ export default function LoginScreen({ navigation }) {
                 value={formData.password}
                 onChangeText={(text) => handleChange("password", text)}
                 secureTextEntry={!showPassword}
+                editable={!isLoading}
               />
               <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}
                 style={styles.passwordIcon}
+                disabled={isLoading}
               >
                 <Icon
                   name={showPassword ? "eye-off-outline" : "eye-outline"}
@@ -182,24 +205,28 @@ export default function LoginScreen({ navigation }) {
               <Text style={styles.errorText}>{errors.password}</Text>
             )}
 
-            <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
-              <TouchableOpacity
-                style={styles.loginButton}
-                onPress={handleLogin}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.loginButtonText}>Sign In</Text>
-              </TouchableOpacity>
-            </Animated.View>
+            <TouchableOpacity
+              style={[styles.button, isLoading && styles.buttonDisabled]}
+              onPress={handleLogin}
+              disabled={isLoading}
+              activeOpacity={0.8}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.buttonText}>Sign In</Text>
+              )}
+            </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.registerLink}
+              style={styles.linkContainer}
               onPress={() => navigation.navigate("Register")}
               activeOpacity={0.7}
+              disabled={isLoading}
             >
-              <Text style={styles.registerText}>
+              <Text style={styles.linkText}>
                 Don't have an account?{" "}
-                <Text style={styles.registerTextBold}>Sign Up</Text>
+                <Text style={styles.linkTextBold}>Sign Up</Text>
               </Text>
             </TouchableOpacity>
           </View>
@@ -223,18 +250,18 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   headerContainer: {
-    marginBottom: 40,
+    marginBottom: 32,
     alignItems: "center",
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#333",
-    marginBottom: 8,
+    color: "#0782F9",
+    marginBottom: 4,
     textAlign: "center",
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#666",
     textAlign: "center",
   },
@@ -244,20 +271,20 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#f8f9fa",
     borderWidth: 1,
-    borderColor: "#eee",
+    borderColor: "#e9ecef",
     borderRadius: 12,
     marginBottom: 16,
     paddingHorizontal: 16,
-    height: 56,
+    height: 48,
   },
   inputIcon: {
     marginRight: 12,
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 15,
     color: "#333",
   },
   inputError: {
@@ -269,33 +296,36 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "#ff6b6b",
-    fontSize: 12,
+    fontSize: 11,
     marginTop: -12,
     marginBottom: 16,
     marginLeft: 4,
   },
-  loginButton: {
+  button: {
     backgroundColor: "#0782F9",
-    height: 56,
+    height: 48,
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 16,
   },
-  loginButtonText: {
+  buttonDisabled: {
+    backgroundColor: "#ccc",
+  },
+  buttonText: {
     color: "white",
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "600",
   },
-  registerLink: {
-    marginTop: 24,
+  linkContainer: {
+    marginTop: 20,
     alignItems: "center",
   },
-  registerText: {
+  linkText: {
     color: "#666",
-    fontSize: 14,
+    fontSize: 13,
   },
-  registerTextBold: {
+  linkTextBold: {
     color: "#0782F9",
     fontWeight: "600",
   },
