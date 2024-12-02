@@ -30,32 +30,41 @@ export const AuthProvider = ({ children }) => {
       const users = await AsyncStorage.getItem("users");
       const parsedUsers = users ? JSON.parse(users) : [];
 
-      const matchedUser = parsedUsers.find(
-        (user) =>
-          user.email === credentials.email &&
-          user.password === credentials.password
-      );
+      const user = parsedUsers.find((user) => user.email === credentials.email);
 
-      if (matchedUser) {
-        const userData = {
-          name: matchedUser.name,
-          email: matchedUser.email,
-        };
-
-        await AsyncStorage.setItem("user", JSON.stringify(userData));
-        setUser(userData);
-        return { success: true };
-      } else {
+      if (!user) {
         return {
           success: false,
-          error: "Invalid email or password",
+          error: {
+            email: "No account found with this email",
+          },
         };
       }
+
+      if (user.password !== credentials.password) {
+        return {
+          success: false,
+          error: {
+            password: "Incorrect password",
+          },
+        };
+      }
+
+      const userData = {
+        name: user.name,
+        email: user.email,
+      };
+
+      await AsyncStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
+      return { success: true };
     } catch (error) {
       console.error("Error during login:", error);
       return {
         success: false,
-        error: "An error occurred during login",
+        error: {
+          general: "An error occurred during login",
+        },
       };
     }
   };

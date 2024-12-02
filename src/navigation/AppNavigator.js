@@ -19,16 +19,7 @@ export default function AppNavigator() {
           gestureEnabled: false,
         }}
       >
-        {user ? (
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              gestureEnabled: false,
-              headerBackVisible: false,
-            }}
-          />
-        ) : (
+        {!user ? (
           <>
             <Stack.Screen
               name="Login"
@@ -47,6 +38,15 @@ export default function AppNavigator() {
               }}
             />
           </>
+        ) : (
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+              gestureEnabled: false,
+              headerBackVisible: false,
+            }}
+          />
         )}
       </Stack.Navigator>
     </NavigationContainer>

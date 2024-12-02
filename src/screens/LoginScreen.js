@@ -89,46 +89,51 @@ export default function LoginScreen({ navigation }) {
     ]).start();
   };
 
- const handleLogin = async () => {
-   try {
-     setIsLoading(true);
-     Keyboard.dismiss();
-     animateButton();
+  const handleLogin = async () => {
+    try {
+      setIsLoading(true);
+      Keyboard.dismiss();
+      animateButton();
 
-     const emailError = validateEmail(formData.email);
-     const passwordError = validatePassword(formData.password);
+      setErrors({});
 
-     const newErrors = {
-       email: emailError,
-       password: passwordError,
-     };
+      const emailError = validateEmail(formData.email);
+      const passwordError = validatePassword(formData.password);
 
-     setErrors(newErrors);
+      const validationErrors = {
+        email: emailError,
+        password: passwordError,
+      };
 
-     if (emailError || passwordError) {
-       return;
-     }
+      setErrors(validationErrors);
 
-     const result = await login({
-       email: formData.email,
-       password: formData.password,
-     });
+      if (emailError || passwordError) {
+        return;
+      }
 
-     if (!result.success) {
-       setErrors((prev) => ({
-         ...prev,
-         email: result.error,
-       }));
-     }
-   } catch (error) {
-     setErrors((prev) => ({
-       ...prev,
-       email: "An unexpected error occurred",
-     }));
-   } finally {
-     setIsLoading(false);
-   }
- };
+      const result = await login({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (!result.success) {
+        if (result.error) {
+          setErrors((prev) => ({
+            ...prev,
+            ...result.error,
+          }));
+        }
+      }
+    } catch (error) {
+      setErrors((prev) => ({
+        ...prev,
+        general: "An unexpected error occurred",
+      }));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView

@@ -1,5 +1,4 @@
 const SPOONACULAR_API_KEY = "dd5127b7f1e74a3eb6018f1271fb1c74";
-
 const NUTRITIONIX_APP_ID = "8f0939b9";
 const NUTRITIONIX_API_KEY = "6b62aa7e9bd39198b47a2e84bc6c3d04";
 const NUTRITIONIX_BASE_URL = "https://trackapi.nutritionix.com/v2";
@@ -27,7 +26,6 @@ export const fetchHealthyRecipes = async () => {
   }
 };
 
-
 export const fetchExerciseStats = async () => {
   try {
     const response = await fetch(`${NUTRITIONIX_BASE_URL}/natural/exercise`, {
@@ -54,7 +52,6 @@ export const fetchExerciseStats = async () => {
   }
 };
 
-// Fetch nutrition info from Nutritionix
 export const fetchNutritionInfo = async (query) => {
   try {
     const response = await fetch(`${NUTRITIONIX_BASE_URL}/natural/nutrients`, {
@@ -81,10 +78,8 @@ export const fetchNutritionInfo = async (query) => {
   }
 };
 
-
 export const fetchHealthStats = async () => {
   try {
-
     const exerciseData = await fetchExerciseStats();
 
     const totalCaloriesBurned = exerciseData.exercises.reduce(
@@ -107,7 +102,7 @@ export const fetchHealthStats = async () => {
           ?.duration_min * 100 || 0,
       caloriesBurned: Math.round(totalCaloriesBurned),
       caloriesConsumed: Math.round(totalCaloriesConsumed),
-      water: 0, 
+      water: 0,
       activeMinutes: exerciseData.exercises.reduce(
         (sum, ex) => sum + ex.duration_min,
         0
@@ -120,7 +115,7 @@ export const fetchHealthStats = async () => {
             100) /
             10000) *
           100,
-        calories: (totalCaloriesBurned / 500) * 100, 
+        calories: (totalCaloriesBurned / 500) * 100,
         active:
           (exerciseData.exercises.reduce(
             (sum, ex) => sum + ex.duration_min,
@@ -146,7 +141,6 @@ export const fetchHealthStats = async () => {
     };
   }
 };
-
 
 export const searchFoodItems = async (query) => {
   try {
