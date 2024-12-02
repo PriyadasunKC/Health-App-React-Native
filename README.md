@@ -83,16 +83,9 @@ markdown
 Copy
 ## Screen Shots  
 
-<img src="images/1.png" width="100" alt="Register Screen" /> 
-<img src="images/2.png" width="100" alt="Login Screen" />
-<img src="images/3.png" width="100" alt="Register Screen" />
-<img src="images/4.png" width="100" alt="Dashboard with WHO stats" />
-<img src="images/1.png" width="100" alt="Meal tracker" />
-<img src="images/5.png" width="100" alt="Healthy Meal Card" />
-
-![Register Screen](images/1.png)
-![Login Screen](images/2.png)
-![Register Screen](images/3.png)
-![Dashbaord with WHO stats](images/4.png)
-![Meal tracker](images/1.png)
-![Healthy Meal Card List with Touch counter](images/5.png)
+<img src="images/1.png" width="200" alt="Register Screen" /> 
+<img src="images/2.png" width="200" alt="Login Screen" />
+<img src="images/3.png" width="200" alt="Register Screen" />
+<img src="images/4.png" width="200" alt="Dashboard with WHO stats" />
+<img src="images/1.png" width="200" alt="Meal tracker" />
+<img src="images/5.png" width="200" alt="Healthy Meal Card" />
