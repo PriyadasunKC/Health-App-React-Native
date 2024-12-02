@@ -8,5 +8,4 @@ export const getFallbackData = () => [
     status: "Healthy",
     calories: "450",
   },
-  // Add more fallback items as needed
 ];

@@ -1,4 +1,3 @@
-// src/screens/HomeScreen.js
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -14,7 +13,9 @@ import { useAuth } from "../contexts/AuthContext";
 import { useClickCount } from "../contexts/ClickCountContext";
 import { Header } from "../components/Header";
 import { HealthCard } from "../components/HealthCard";
+import { MealTracker } from "../components/MealTracker";
 import { FloatingCounter } from "../components/FloatingCounter";
+import WorldHealthDashboard from "../components/WorldHealthDashboard"; // Changed from named to default import
 import { fetchHealthyRecipes } from "../services/api";
 import { getFallbackData } from "../services/mockData";
 
@@ -26,19 +27,19 @@ export default function HomeScreen({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
-  const loadHealthData = async (showRefresh = false) => {
+  const loadData = async (showRefresh = false) => {
     try {
       if (showRefresh) {
         setRefreshing(true);
       } else {
         setLoading(true);
       }
-      const data = await fetchHealthyRecipes();
-      setHealthData(data);
+      const recipesData = await fetchHealthyRecipes();
+      setHealthData(recipesData);
       setError(null);
     } catch (error) {
-      console.error("Error loading health data:", error);
-      setError("Failed to load health data");
+      console.error("Error loading data:", error);
+      setError("Failed to load data");
       setHealthData(getFallbackData());
     } finally {
       setLoading(false);
@@ -47,7 +48,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   useEffect(() => {
-    loadHealthData();
+    loadData();
   }, []);
 
   const handleCardClick = (item) => {
@@ -60,7 +61,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   const onRefresh = () => {
-    loadHealthData(true);
+    loadData(true);
   };
 
   if (error) {
@@ -71,7 +72,7 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.errorText}>{error}</Text>
           <TouchableOpacity
             style={styles.retryButton}
-            onPress={() => loadHealthData()}
+            onPress={() => loadData()}
           >
             <Text style={styles.retryButtonText}>Retry</Text>
           </TouchableOpacity>
@@ -91,19 +92,33 @@ export default function HomeScreen({ navigation }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <Text style={styles.sectionTitle}>Healthy Recipes</Text>
-
         {loading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#0782F9" />
-            <Text style={styles.loadingText}>Loading healthy recipes...</Text>
+            <Text style={styles.loadingText}>Loading data...</Text>
           </View>
         ) : (
-          <View style={styles.cardContainer}>
-            {healthData.map((item) => (
-              <HealthCard key={item.id} item={item} onPress={handleCardClick} />
-            ))}
-          </View>
+          <>
+            <WorldHealthDashboard />
+
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Track Your Meals</Text>
+              <MealTracker />
+            </View>
+
+            <View style={styles.recipesSection}>
+              <Text style={styles.sectionTitle}>Healthy Recipes</Text>
+              <View style={styles.cardContainer}>
+                {healthData.map((item) => (
+                  <HealthCard
+                    key={item.id}
+                    item={item}
+                    onPress={handleCardClick}
+                  />
+                ))}
+              </View>
+            </View>
+          </>
         )}
       </ScrollView>
 
@@ -120,16 +135,21 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  cardContainer: {
+  sectionContainer: {
     padding: 20,
+    paddingBottom: 0,
+  },
+  recipesSection: {
+    paddingHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    marginHorizontal: 20,
-    marginTop: 20,
     marginBottom: 15,
     color: "#333",
+  },
+  cardContainer: {
+    marginBottom: 20,
   },
   loadingContainer: {
     flex: 1,

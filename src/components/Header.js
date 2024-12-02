@@ -8,7 +8,7 @@ export const Header = ({ user, onLogout }) => (
     <View style={styles.headerTop}>
       <View>
         <Text style={styles.headerTitle}>Health Dashboard</Text>
-        <Text style={styles.headerEmail}>{user?.email}</Text>
+        <Text style={styles.headerEmail}>{user?.name}</Text>
       </View>
       <TouchableOpacity onPress={onLogout} style={styles.logoutButton}>
         <Icon name="logout" size={24} color="white" />
