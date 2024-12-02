@@ -1,31 +1,40 @@
-import { useEffect, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import { useClickCount } from "../contexts/ClickCountContext";
-import { globalStyles } from "../styles/globalStyles";
+import { Header } from "../components/Header";
+import { HealthCard } from "../components/HealthCard";
+import { FloatingCounter } from "../components/FloatingCounter";
+import { fetchHealthyRecipes } from "../services/api";
+import { getFallbackData } from "../services/mockData";
 
 export default function HomeScreen({ navigation }) {
   const { user, logout } = useAuth();
   const { clickCount, incrementCount } = useClickCount();
   const [healthData, setHealthData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchHealthData();
+    loadHealthData();
   }, []);
 
-  const fetchHealthData = async () => {
+  const loadHealthData = async () => {
     try {
-      const response = await fetch(
-        "https://health.gov/myhealthfinder/api/v3/topicsearch.json?lang=en"
-      );
-      const data = await response.json();
-      setHealthData(data.Result.Resources.Resource);
-      setLoading(false);
+      const data = await fetchHealthyRecipes();
+      setHealthData(data);
+      setError(null);
     } catch (error) {
-      console.error("Error fetching health data:", error);
+      console.error("Error loading health data:", error);
+      setError("Failed to load health data");
+      setHealthData(getFallbackData());
+    } finally {
       setLoading(false);
     }
+  };
+
+  const handleCardClick = (item) => {
+    incrementCount();
   };
 
   const handleLogout = () => {
@@ -33,43 +42,82 @@ export default function HomeScreen({ navigation }) {
     navigation.replace("Login");
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={globalStyles.card}
-      onPress={() => incrementCount()}
-    >
-      <Text style={globalStyles.cardTitle}>{item.Title}</Text>
-      <Text style={globalStyles.cardStatus}>Status: Active</Text>
-      <Text style={globalStyles.cardDescription}>{item.Categories}</Text>
-    </TouchableOpacity>
-  );
-
-  return (
-    <View style={globalStyles.container}>
-      <View style={globalStyles.header}>
-        <Text style={globalStyles.headerTitle}>Health Dashboard</Text>
-        <Text style={globalStyles.headerEmail}>{user?.email}</Text>
-        <TouchableOpacity onPress={handleLogout}>
-          <Text style={globalStyles.logoutText}>Logout</Text>
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={loadHealthData}>
+          <Text style={styles.retryButtonText}>Retry</Text>
         </TouchableOpacity>
       </View>
+    );
+  }
 
-      {loading ? (
-        <Text style={globalStyles.loadingText}>Loading...</Text>
-      ) : (
-        <FlatList
-          data={healthData}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.Id}
-          contentContainerStyle={globalStyles.listContainer}
-        />
-      )}
+  return (
+    <View style={styles.container}>
+      <Header user={user} onLogout={handleLogout} />
 
-      <TouchableOpacity style={globalStyles.floatingButton}>
-        <Text style={globalStyles.floatingButtonText}>
-          Clicks: {clickCount}
-        </Text>
-      </TouchableOpacity>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <Text style={styles.sectionTitle}>Healthy Recipes</Text>
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>Loading healthy recipes...</Text>
+          </View>
+        ) : (
+          healthData.map((item) => (
+            <HealthCard key={item.id} item={item} onPress={handleCardClick} />
+          ))
+        )}
+      </ScrollView>
+
+      <FloatingCounter count={clickCount} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
+  content: {
+    flex: 1,
+    padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 15,
+    color: "#333",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: "#666",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 16,
+    color: "#ff6b6b",
+    marginBottom: 15,
+  },
+  retryButton: {
+    backgroundColor: "#0782F9",
+    padding: 10,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: "white",
+    fontWeight: "500",
+  },
+});
