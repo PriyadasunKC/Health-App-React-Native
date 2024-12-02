@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   Platform,
 } from "react-native";
-import { LineChart } from "react-native-chart-kit";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const WorldHealthDashboard = () => {
@@ -16,7 +15,6 @@ const WorldHealthDashboard = () => {
   const [error, setError] = useState(null);
 
   const screenWidth = Dimensions.get("window").width;
-  const chartWidth = screenWidth - 60; // Adjusted for container padding
 
   const fetchWHOData = async () => {
     try {
@@ -243,8 +241,8 @@ const styles = StyleSheet.create({
   },
   chart: {
     borderRadius: 16,
-    marginRight: -15, // Compensate for right padding
-    marginLeft: -15, // Compensate for left padding
+    marginRight: -15, 
+    marginLeft: -15, 
   },
   loadingContainer: {
     padding: 20,

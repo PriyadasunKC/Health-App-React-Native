@@ -15,7 +15,7 @@ import { Header } from "../components/Header";
 import { HealthCard } from "../components/HealthCard";
 import { MealTracker } from "../components/MealTracker";
 import { FloatingCounter } from "../components/FloatingCounter";
-import WorldHealthDashboard from "../components/WorldHealthDashboard"; // Changed from named to default import
+import WorldHealthDashboard from "../components/WorldHealthDashboard";
 import { fetchHealthyRecipes } from "../services/api";
 import { getFallbackData } from "../services/mockData";
 

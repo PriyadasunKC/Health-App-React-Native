@@ -1,8 +1,5 @@
-// src/services/api.js
-
 const SPOONACULAR_API_KEY = "dd5127b7f1e74a3eb6018f1271fb1c74";
 
-// Nutritionix API credentials
 const NUTRITIONIX_APP_ID = "8f0939b9";
 const NUTRITIONIX_API_KEY = "6b62aa7e9bd39198b47a2e84bc6c3d04";
 const NUTRITIONIX_BASE_URL = "https://trackapi.nutritionix.com/v2";
