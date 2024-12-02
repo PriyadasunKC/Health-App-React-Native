@@ -1,4 +1,3 @@
-// src/screens/RegisterScreen.js
 import React, { useState } from "react";
 import {
   View,
@@ -27,7 +26,6 @@ export default function RegisterScreen({ navigation }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [buttonScale] = useState(new Animated.Value(1));
 
-  // Validation functions remain the same
   const validateName = (name) => {
     if (!name.trim()) {
       return "Name is required";
