@@ -70,6 +70,26 @@ For Android
     
 ## Screen Shots
 
+C
+in readme.md file can we small the isize of the images
+
+
+Yes, here's the README.md content with smaller image sizes. I'll show you a few options:
+
+Option 1 (Very small - 100px width):
+
+markdown
+
+Copy
+## Screen Shots  
+
+<img src="images/1.png" width="100" alt="Register Screen" /> 
+<img src="images/2.png" width="100" alt="Login Screen" />
+<img src="images/3.png" width="100" alt="Register Screen" />
+<img src="images/4.png" width="100" alt="Dashboard with WHO stats" />
+<img src="images/1.png" width="100" alt="Meal tracker" />
+<img src="images/5.png" width="100" alt="Healthy Meal Card" />
+
 ![Register Screen](images/1.png)
 ![Login Screen](images/2.png)
 ![Register Screen](images/3.png)
