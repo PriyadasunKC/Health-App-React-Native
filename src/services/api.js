@@ -17,9 +17,6 @@ export const fetchHealthyRecipes = async () => {
       image: item.image,
       description: `${item.healthScore} Health Score • ${item.readyInMinutes} mins`,
       status: item.vegan ? "Vegan" : item.vegetarian ? "Vegetarian" : "Healthy",
-      calories:
-        item.nutrition?.nutrients?.find((n) => n.name === "Calories")?.amount ||
-        "N/A",
     }));
   } catch (error) {
     throw new Error("Failed to fetch health data");

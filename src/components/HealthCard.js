@@ -41,10 +41,6 @@ export const HealthCard = ({ item, onPress }) => (
       </View>
       <Text style={styles.cardTitle}>{item.title}</Text>
       <Text style={styles.cardDescription}>{item.description}</Text>
-      <View style={styles.cardFooter}>
-        <Icon name="fire" size={16} color="#ff6b6b" />
-        <Text style={styles.caloriesText}>{item.calories} calories</Text>
-      </View>
     </View>
   </TouchableOpacity>
 );
