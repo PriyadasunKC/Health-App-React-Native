@@ -83,9 +83,9 @@ markdown
 Copy
 ## Screen Shots  
 
-<img src="images/1.png" width="500" alt="Register Screen" /> 
-<img src="images/2.png" width="500" alt="Login Screen" />
-<img src="images/3.png" width="500" alt="Register Screen" />
-<img src="images/4.png" width="500" alt="Dashboard with WHO stats" />
-<img src="images/1.png" width="500" alt="Meal tracker" />
-<img src="images/5.png" width="500" alt="Healthy Meal Card" />
+<img src="images/1.png" width="400" alt="Register Screen" /> 
+<img src="images/2.png" width="400" alt="Login Screen" />
+<img src="images/3.png" width="400" alt="Register Screen" />
+<img src="images/4.png" width="400" alt="Dashboard with WHO stats" />
+<img src="images/1.png" width="400" alt="Meal tracker" />
+<img src="images/5.png" width="400" alt="Healthy Meal Card" />
