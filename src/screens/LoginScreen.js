@@ -51,7 +51,6 @@ export default function LoginScreen({ navigation }) {
       [field]: value,
     }));
 
-    // Validate on change and update errors
     let error = "";
     if (field === "email") {
       error = validateEmail(value);
@@ -66,7 +65,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleLogin = () => {
-    // Validate all fields
+
     const emailError = validateEmail(formData.email);
     const passwordError = validatePassword(formData.password);
 
@@ -77,12 +76,12 @@ export default function LoginScreen({ navigation }) {
 
     setErrors(newErrors);
 
-    // Check if there are any errors
+    
     if (emailError || passwordError) {
       return;
     }
 
-    // Proceed with login if no errors
+ 
     login({ email: formData.email });
     navigation.replace("Home");
   };

@@ -74,7 +74,7 @@ export default function RegisterScreen({ navigation }) {
       [field]: value,
     }));
 
-    // Validate on change and update errors
+
     let error = "";
     switch (field) {
       case "name":
@@ -85,7 +85,7 @@ export default function RegisterScreen({ navigation }) {
         break;
       case "password":
         error = validatePassword(value);
-        // Also validate confirm password when password changes
+      
         if (formData.confirmPassword) {
           const confirmError = validateConfirmPassword(
             formData.confirmPassword,
@@ -109,7 +109,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   const handleRegister = () => {
-    // Validate all fields
+   
     const nameError = validateName(formData.name);
     const emailError = validateEmail(formData.email);
     const passwordError = validatePassword(formData.password);
@@ -127,12 +127,10 @@ export default function RegisterScreen({ navigation }) {
 
     setErrors(newErrors);
 
-    // Check if there are any errors
     if (Object.values(newErrors).some((error) => error !== "")) {
       return;
     }
 
-    // Proceed with registration if no errors
     navigation.navigate("Login");
   };
 
